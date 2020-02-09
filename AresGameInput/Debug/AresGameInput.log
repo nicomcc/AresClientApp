@@ -1,4 +1,3 @@
 ﻿  AresGameInput.cpp
-c:\users\nicolas\documents\aresgameinput\aresgameinput\aresgameinput\aresgameinput.cpp(10): warning C4326: tipo de retorno de 'main' deve ser 'int' em vez de 'void'
-c:\users\nicolas\documents\aresgameinput\aresgameinput\aresgameinput\aresgameinput.cpp(57): warning C4551: faltando lista de argumentos na chamada de função
+c:\users\nicolas\documents\aresgameinput\aresgameinput\aresgameinput\aresgameinput.cpp(11): warning C4326: tipo de retorno de 'main' deve ser 'int' em vez de 'void'
   AresGameInput.vcxproj -> C:\Users\Nicolas\Documents\AresGameInput\AresGameInput\Debug\AresGameInput.exe

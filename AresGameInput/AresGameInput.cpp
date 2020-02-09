@@ -2,6 +2,7 @@
 #include <string>
 #include <WS2tcpip.h>
 #include <conio.h>
+#include <time.h>
 #pragma comment(lib, "ws2_32.lib")
 
 using namespace std;
@@ -9,7 +10,10 @@ using namespace std;
 void main()
 {
 	string ipAddress = "127.0.0.1";			// IP Address of the server
-	int port = 8052;						// Listening port # on the server
+	int port = 8052;
+
+	clock_t this_time = 0;
+	clock_t last_time = 0;
 
 	// Initialize WinSock
 	WSAData data;
@@ -53,18 +57,39 @@ void main()
 	while (1)
 	{
 		// Prompt the user for some text
+		this_time = clock() / CLOCKS_PER_SEC;
 
-		if (_kbhit)
-		{ 
+	if (_kbhit())
+	{
 		cout << "Enter an input: " << endl;
 		userInput = _getch();
 		cout << "You entered: " << userInput << endl;
-		}
-
+	
 		if (userInput.size() > 0)		// Make sure the user has typed in something
 		{
 			// Send the text
 			int sendResult = send(sock, userInput.c_str(), userInput.size() + 1, 0);
+			if (sendResult != SOCKET_ERROR)
+			{
+				// Wait for response
+				ZeroMemory(buf, 4096);
+				int bytesReceived = recv(sock, buf, 4096, 0);
+				if (bytesReceived > 0)
+				{
+					// Echo response to console
+					cout << "SERVER> " << string(buf, 0, bytesReceived) << endl;
+					bytesReceived = 0;
+					ZeroMemory(buf, 4096);
+				}
+			}
+		}
+	}
+		//cout << this_time << endl;
+		if (this_time != last_time)
+		{
+			last_time = this_time;
+			
+			int sendResult = send(sock, "0", userInput.size() + 1, 0);
 			if (sendResult != SOCKET_ERROR)
 			{
 				// Wait for response
