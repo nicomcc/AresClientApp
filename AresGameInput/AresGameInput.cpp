@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <WS2tcpip.h>
+#include <conio.h>
 #pragma comment(lib, "ws2_32.lib")
 
 using namespace std;
@@ -52,8 +53,9 @@ void main()
 	while(1)
 	{
 		// Prompt the user for some text
-		cout << "> ";
-		getline(cin, userInput);
+		cout << "Enter an input: " << endl;
+		userInput = _getch();
+		cout << "You entered: " << userInput << endl;
 
 		if (userInput.size() > 0)		// Make sure the user has typed in something
 		{
