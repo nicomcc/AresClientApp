@@ -50,12 +50,16 @@ void main()
 	char buf[4096];
 	string userInput;
 
-	while(1)
+	while (1)
 	{
 		// Prompt the user for some text
+
+		if (_kbhit)
+		{ 
 		cout << "Enter an input: " << endl;
 		userInput = _getch();
 		cout << "You entered: " << userInput << endl;
+		}
 
 		if (userInput.size() > 0)		// Make sure the user has typed in something
 		{
