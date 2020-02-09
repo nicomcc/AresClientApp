@@ -3,12 +3,17 @@
 #include <WS2tcpip.h>
 #include <conio.h>
 #include <time.h>
+#include <fstream>
+#include "LogMessage.h"
+
 #pragma comment(lib, "ws2_32.lib")
 
 using namespace std;
 
 void main()
 {
+	cout << GetInitialTimeStamp() << endl;
+
 	string ipAddress = "127.0.0.1";			// IP Address of the server
 	int port = 8052;
 
@@ -54,6 +59,8 @@ void main()
 	char buf[4096];
 	string userInput;
 
+	LogMessage a;	
+	a.DisplayDate();
 	while (1)
 	{
 		// Prompt the user for some text
@@ -69,6 +76,9 @@ void main()
 		{
 			// Send the text
 			int sendResult = send(sock, userInput.c_str(), userInput.size() + 1, 0);
+
+			LogMessage(0, userInput[0]);
+
 			if (sendResult != SOCKET_ERROR)
 			{
 				// Wait for response
@@ -110,4 +120,5 @@ void main()
 	// Gracefully close down everything
 	closesocket(sock);
 	WSACleanup();
+
 }
