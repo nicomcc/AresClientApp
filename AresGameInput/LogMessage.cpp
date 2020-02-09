@@ -1,45 +1,45 @@
 #include "LogMessage.h"
 
-LogMessage::LogMessage(char input, int hour)
+LogMessage::LogMessage(char input)
 {
 	SetInput(input);
-	SetTime(hour);
+	timeStamp = GetActualTimeStamp();
 }
 
 void LogMessage::SetInput(char s)
 {
-	input = s;
+	if(CheckValidInput(s))
+			input = s;
 }
-
-void LogMessage::SetTime(int t)
-{
-	hour = t;
-}
-
-void LogMessage::WriteMessage()
-{
-
-}
-
 
 std::ofstream & operator<<(std::ofstream &ofs, LogMessage &a)
 {
-	ofs << a.hour << std::endl;
-	ofs << a.input << std::endl;
+	ofs << a.timeStamp << std::endl;
+	if(a.input != ' ')
+		ofs << a.input << std::endl;
+	else
+		ofs << "SPACE" << std::endl;
 	return ofs;
 }
 
 std::ifstream & operator>>(std::ifstream &ifs, LogMessage &a)
 {
-	ifs >> a.hour >> a.input;
+	ifs >> a.timeStamp >> a.input;
 	return ifs;
 }
 
 std::ostream & operator<<(std::ostream &os, LogMessage &a)
 {
-	os << "Horario: " << a.hour << std::endl;
-	os << "Comando: " << a.input << std::endl;
+	os << a.timeStamp << " Input: " << a.input << std::endl;
 	return os;
+}
+
+bool CheckValidInput(char a)
+{	
+	vector <char> validInput = { 'a', 's', 'd', 'w', 'j', 'k', 'l', 'i', 'c', 'b', 'm', ' '};
+	for (char i : validInput)
+		if (a == i)
+			return true;
 }
 
 string IntToString(int a)
@@ -58,4 +58,15 @@ string GetInitialTimeStamp()
 	return (IntToString(newtime.tm_year + 1900) + '_' + IntToString(newtime.tm_mon + 1) + '_' +
 		IntToString(newtime.tm_mday) + '_' + IntToString(newtime.tm_hour) + '_' + IntToString(newtime.tm_min) + ".txt");
 	
+}
+
+string GetActualTimeStamp()
+{
+	struct tm newtime;
+	time_t now = time(0);
+	localtime_s(&newtime, &now);
+
+	return (IntToString(newtime.tm_year + 1900) + '/' + IntToString(newtime.tm_mon + 1) + '/' +
+		IntToString(newtime.tm_mday) + ' ' + IntToString(newtime.tm_hour) + ':' + IntToString(newtime.tm_min) + ":" + IntToString(newtime.tm_sec));
+
 }

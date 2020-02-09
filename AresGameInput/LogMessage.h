@@ -4,6 +4,7 @@
 #include <iostream>
 #include <ctime>
 #include <sstream>
+#include <vector>
 
 using namespace std;
 
@@ -17,31 +18,17 @@ class LogMessage
 {
 private:
 	char input;
-	int hour;
+	string timeStamp;
 	
 
 public:
 	LogMessage() {}
-	LogMessage(char input, int hour);
+	LogMessage(char input);
+
 	char GetInput() { return input; }
-	int GetTime() { return hour; }
+	string GetTimeStamp() { return timeStamp; }
 
 	void SetInput(char s);
-	void SetTime(int t);
-
-
-	void DisplayDate()
-	{
-		struct tm newtime;
-		time_t now = time(0);
-		localtime_s(&newtime, &now);
-		std::cout << (newtime.tm_year + 1900) << '-'
-			<< (newtime.tm_mon + 1) << '-'
-			<< newtime.tm_mday << '-'
-			<< newtime.tm_hour << ':' << newtime.tm_min <<"\n";
-	}
-
-	void WriteMessage();
 
 	friend std::ofstream & operator<<(std::ofstream &ofs, LogMessage &a);
 	friend std::ifstream & operator>>(std::ifstream &ifs, LogMessage &a);
@@ -52,10 +39,14 @@ public:
 
 };
 
+bool CheckValidInput(char a);
+
 std::string IntToString(int a);
 
 //get initial timestamp for file name
 std::string GetInitialTimeStamp();
+
+std::string GetActualTimeStamp();
 
 
 #endif // LOGMESSAGE_H

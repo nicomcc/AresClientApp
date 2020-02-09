@@ -12,7 +12,11 @@ using namespace std;
 
 void main()
 {
-	cout << GetInitialTimeStamp() << endl;
+	bool connection = false;
+	string messageReceived = "";
+
+	//Get log file name
+	string fileName = GetInitialTimeStamp();
 
 	string ipAddress = "127.0.0.1";			// IP Address of the server
 	int port = 8052;
@@ -55,46 +59,65 @@ void main()
 		return;
 	}
 
-	// Do-while loop to send and receive data
+	//while loop to send and receive data
 	char buf[4096];
 	string userInput;
 
-	LogMessage a;	
-	a.DisplayDate();
+	cout << "waiting for server connection" << endl;
+
 	while (1)
 	{
-		// Prompt the user for some text
-		this_time = clock() / CLOCKS_PER_SEC;
+	
+	this_time = clock() / CLOCKS_PER_SEC;
 
+	if (messageReceived[0] == 's' && !connection)
+	{
+		cout << "Connected to Server! Hit 'b' to begin!" << endl;
+		connection = true;
+	}
+	//check if any key was pressed (prevents program from hang on getch()
 	if (_kbhit())
 	{
 		cout << "Enter an input: " << endl;
 		userInput = _getch();
-		cout << "You entered: " << userInput << endl;
-	
-		if (userInput.size() > 0)		// Make sure the user has typed in something
+		// Send text if input is valid
+		if (CheckValidInput(userInput[0]))
 		{
-			// Send the text
-			int sendResult = send(sock, userInput.c_str(), userInput.size() + 1, 0);
-
-			LogMessage(0, userInput[0]);
-
-			if (sendResult != SOCKET_ERROR)
+			cout << "You entered: " << userInput << endl;
+	
+			if (userInput.size() > 0)		// Make sure the user has typed in something
 			{
-				// Wait for response
-				ZeroMemory(buf, 4096);
-				int bytesReceived = recv(sock, buf, 4096, 0);
-				if (bytesReceived > 0)
-				{
-					// Echo response to console
-					cout << "SERVER> " << string(buf, 0, bytesReceived) << endl;
-					bytesReceived = 0;
-					ZeroMemory(buf, 4096);
+					int sendResult = send(sock, userInput.c_str(), userInput.size() + 1, 0);
+					
+					LogMessage log(userInput[0]);
+					//operator overload to print object
+					cout << log << endl;
+					//write log on file 
+					ofstream ofs(fileName, ios::app);
+					ofs << log;
+					ofs.close();
+
+					if (sendResult != SOCKET_ERROR)
+					{
+						// Wait for response
+						ZeroMemory(buf, 4096);
+						int bytesReceived = recv(sock, buf, 4096, 0);
+						if (bytesReceived > 0)
+						{
+							// Echo response to console
+							cout << "SERVER> " << string(buf, 0, bytesReceived) << endl;
+							bytesReceived = 0;
+							ZeroMemory(buf, 4096);
+						}
+					}
 				}
 			}
-		}
+		else 
+			cout << "Invalid Input!" << endl; //if CheckValidInput(userInput[0]) returns false:
+
 	}
-		//cout << this_time << endl;
+
+	//keep sending status request to server
 		if (this_time != last_time)
 		{
 			last_time = this_time;
@@ -108,6 +131,7 @@ void main()
 				if (bytesReceived > 0)
 				{
 					// Echo response to console
+					messageReceived = string(buf, 0, bytesReceived);
 					cout << "SERVER> " << string(buf, 0, bytesReceived) << endl;
 					bytesReceived = 0;
 					ZeroMemory(buf, 4096);
@@ -115,9 +139,9 @@ void main()
 			}
 		}
 
-	} //while (userInput.size() > 0);
+	} 
 
-	// Gracefully close down everything
+	//close down everything
 	closesocket(sock);
 	WSACleanup();
 
