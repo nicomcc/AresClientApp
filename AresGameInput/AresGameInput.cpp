@@ -12,8 +12,12 @@ using namespace std;
 
 void main()
 {
+	time_t startGame, endGame;
+
 	bool connection = false;
 	string messageReceived = "";
+
+	bool gameStart = false, gameEnded = false;
 
 	//Get log file name
 	string fileName = GetInitialTimeStamp();
@@ -23,6 +27,10 @@ void main()
 
 	clock_t this_time = 0;
 	clock_t last_time = 0;
+
+	int hourStart = 0,  minStart = 0, secStart = 0;
+	int hourEnded = 0, minEnded = 0, secEnded = 0;
+
 
 	// Initialize WinSock
 	WSAData data;
@@ -63,7 +71,7 @@ void main()
 	char buf[4096];
 	string userInput;
 
-	cout << "waiting for server connection" << endl;
+	cout << "Waiting for server connection! Make sure to start server unity program first!" << endl;
 
 	while (1)
 	{
@@ -93,9 +101,7 @@ void main()
 					//operator overload to print object
 					cout << log << endl;
 					//write log on file 
-					ofstream ofs(fileName, ios::app);
-					ofs << log;
-					ofs.close();
+					WriteLog(fileName, log);
 
 					if (sendResult != SOCKET_ERROR)
 					{
@@ -132,6 +138,50 @@ void main()
 				{
 					// Echo response to console
 					messageReceived = string(buf, 0, bytesReceived);
+
+					if (messageReceived[0] == 'r')
+					{						
+						if (!gameStart)
+						{							
+							gameStart = true;
+							gameEnded = false;
+							GetTime(&hourStart, &minStart, &secStart);
+							time(&startGame);
+							cout << "Game Started at " << hourStart << ":" << minStart << ":" << secStart << endl;
+						}
+					}
+
+					if (messageReceived[0] == 'e')
+					{
+						if (!gameEnded)
+						{
+							gameEnded = true;
+							gameStart = false;
+							GetTime(&hourEnded, &minEnded, &secEnded);
+							time(&endGame);
+							double seconds = difftime(endGame, startGame);
+							cout << "Game Ended at " << hourEnded << ":" << minEnded << ":" << secEnded << endl;
+							cout << "Game duration: " << seconds << " seconds" << endl;
+
+							int shots = HowManyShots(messageReceived);
+							int targets = HowManyTargetsHit(messageReceived);
+							float precision = ((float)targets / (float)shots) * 100;
+
+							cout << "Shots Fired: " << shots << endl;
+							cout << "Targets Hit: " << targets << endl;
+							cout << "Precision: " << precision << "%" << endl;
+
+							ofstream ofs(fileName, ios::app);
+							ofs << "Game Started: " << hourStart << ":" << minStart << ":" << secStart << endl;
+							ofs << "Game Ended: " << hourEnded << ":" << minEnded << ":" << secEnded << endl;
+							ofs << "Game duration: " << seconds << " seconds" << endl;
+							ofs << "Shots Fired: " << shots << endl;
+							ofs << "Targets Hits : " << targets << endl;
+							ofs << "Precision: " << precision << "%" << endl;
+							ofs.close();
+						}						
+					}
+
 					cout << "SERVER> " << string(buf, 0, bytesReceived) << endl;
 					bytesReceived = 0;
 					ZeroMemory(buf, 4096);

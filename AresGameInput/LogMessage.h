@@ -48,6 +48,13 @@ std::string GetInitialTimeStamp();
 
 std::string GetActualTimeStamp();
 
+void WriteLog(string fileName, LogMessage log);
+
+void GetTime(int* hour, int* min, int* sec);
+
+int HowManyShots(string message);
+
+int HowManyTargetsHit(string message);
 
 #endif // LOGMESSAGE_H
 
