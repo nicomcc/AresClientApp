@@ -1,3 +1,8 @@
 ﻿  AresGameInput.cpp
 C:\Users\Nicolas\Documents\AresGameInput\AresGameInput\AresGameInput\AresGameInput.cpp(14,1): warning C4326: tipo de retorno de 'main' deve ser 'int' em vez de 'void'
+  LogMessage.cpp
+C:\Users\Nicolas\Documents\AresGameInput\AresGameInput\AresGameInput\LogMessage.cpp(103,20): warning C4018: '<': incompatibilidade de signed/unsigned
+C:\Users\Nicolas\Documents\AresGameInput\AresGameInput\AresGameInput\LogMessage.cpp(130,20): warning C4018: '<': incompatibilidade de signed/unsigned
+  Gerando Código...
+C:\Users\Nicolas\Documents\AresGameInput\AresGameInput\AresGameInput\LogMessage.cpp(50): warning C4715: 'CheckValidInput': nem todos os caminhos de controle retornam um valor
   AresGameInput.vcxproj -> C:\Users\Nicolas\Documents\AresGameInput\AresGameInput\Debug\AresGameInput.exe

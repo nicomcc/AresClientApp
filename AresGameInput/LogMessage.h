@@ -11,9 +11,6 @@ using namespace std;
 #ifndef LOGMESSAGE_H
 #define LOGMESSAGE_H
 
-
-
-
 class LogMessage
 {
 private:
@@ -22,7 +19,7 @@ private:
 	
 
 public:
-	LogMessage() {}
+	LogMessage();
 	LogMessage(char input);
 
 	char GetInput() { return input; }

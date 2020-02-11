@@ -1,5 +1,12 @@
 #include "LogMessage.h"
 
+
+LogMessage::LogMessage() 
+{
+	SetInput('0');
+	timeStamp = GetActualTimeStamp();
+}
+
 LogMessage::LogMessage(char input)
 {
 	SetInput(input);

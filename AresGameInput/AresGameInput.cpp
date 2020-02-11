@@ -12,6 +12,7 @@ using namespace std;
 
 void main()
 {
+	//Start Parameters
 	time_t startGame, endGame;
 
 	bool connection = false;
@@ -76,6 +77,7 @@ void main()
 	while (1)
 	{
 	
+	//get current time and check if connection succeeded
 	this_time = clock() / CLOCKS_PER_SEC;
 
 	if (messageReceived[0] == 's' && !connection)
